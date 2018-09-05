@@ -1,0 +1,7 @@
+PE\Bundle\OAuth2ServerBundle\Model\Scope:
+    type: mappedSuperclass
+    fields:
+        name:
+            type: string
+        label:
+            type: string

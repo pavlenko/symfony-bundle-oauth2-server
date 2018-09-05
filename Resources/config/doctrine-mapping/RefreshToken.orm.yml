@@ -1,0 +1,2 @@
+PE\Bundle\OAuth2ServerBundle\Model\RefreshToken:
+    type: mappedSuperclass

@@ -1,0 +1,17 @@
+pe_oauth2_server__authorize:
+    path: /authorize/
+    methods: [GET, POST]
+    defaults:
+        _controller: pe_oauth2_server.controller.authorize
+
+pe_oauth2_server__token:
+    path: /token/
+    methods: [POST]
+    defaults:
+        _controller: pe_oauth2_server.controller.token
+
+pe_oauth2_server__scopes_approve:
+    path: /scopes/approve/
+    methods: [GET, POST]
+    defaults:
+        _controller: pe_oauth2_server.controller.scopes

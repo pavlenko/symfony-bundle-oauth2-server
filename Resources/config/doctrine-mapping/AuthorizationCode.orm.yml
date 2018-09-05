@@ -1,0 +1,5 @@
+PE\Bundle\OAuth2ServerBundle\Model\AuthorizationCode:
+    type: mappedSuperclass
+    fields:
+        redirectUri:
+            type: string

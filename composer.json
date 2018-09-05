@@ -1,0 +1,39 @@
+{
+  "config": {
+    "sort-packages": true
+  },
+  "name": "pe/symfony-bundle-oauth2-server",
+  "description": "Symfony integration of league/oauth2-server",
+  "type": "symfony-bundle",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Eugene Pavlenko",
+      "email": "pavlenko.obs@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^5.5.9|>=7.0.8",
+    "league/oauth2-server": "^7.0 <7.1",
+    "symfony/framework-bundle": "~3.4|~4.0"
+  },
+  "require-dev": {
+    "guzzlehttp/psr7": "^1.4",
+    "symfony/psr-http-message-bridge": "^1.0",
+    "zendframework/zend-diactoros": "^1.7"
+  },
+  "suggest": {
+    "guzzlehttp/psr7": "For use Guzzle PSR7 based request converter",
+    "zendframework/zend-diactoros": "For use Zend Diactoros PSR7 based request converter"
+  },
+  "autoload": {
+    "psr-4": {
+      "PE\\Bundle\\OAuth2ServerBundle\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0-dev"
+    }
+  }
+}

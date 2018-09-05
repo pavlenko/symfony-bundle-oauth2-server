@@ -1,0 +1,10 @@
+{{ form_start(form) }}
+    <h2>{{ 'approve_scopes.title'|trans({client: client.name}, 'PEOAuth2Server') }}</h2>
+    <ul>
+        {% for scope in scopes %}
+            <li>{{ scope.label }}</li>
+        {% endfor %}
+    </ul>
+    <p>{{ 'approve_scopes.description'|trans({client: client.name, server: server_name}, 'PEOAuth2Server') }}</p>
+    {{ form_widget(form) }}
+{{ form_end(form) }}

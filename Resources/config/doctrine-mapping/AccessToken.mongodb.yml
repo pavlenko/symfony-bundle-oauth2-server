@@ -1,0 +1,12 @@
+PE\Bundle\OAuth2ServerBundle\Model\AccessToken:
+    type: mappedSuperclass
+    fields:
+        scopes:
+            type: collection
+        expiryDateTime:
+            type: timestamp
+        userIdentifier:
+            type: string
+            nullable: true
+        client:
+            type: string

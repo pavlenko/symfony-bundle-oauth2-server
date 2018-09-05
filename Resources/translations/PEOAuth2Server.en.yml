@@ -1,0 +1,6 @@
+approve_scopes:
+    title: '%client% would like to:'
+    description: '%client% and %server% will use this information in accordance with their respective terms of service and privacy policies'
+    form:
+        accept: Accept
+        decline: Decline

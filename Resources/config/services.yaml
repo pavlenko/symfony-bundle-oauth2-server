@@ -1,0 +1,183 @@
+services:
+    pe_oauth2_server.object_manager:
+        class: Doctrine\Common\Persistence\ObjectManager
+        arguments:
+            - '%pe_oauth2_server.object_manager_name%'
+
+    pe_oauth2_server.repository.access_token.default:
+        class: PE\Bundle\OAuth2ServerBundle\Doctrine\AccessTokenRepository
+        arguments:
+            - '@pe_oauth2_server.object_manager'
+            - '%pe_oauth2_server.class.access_token%'
+
+    pe_oauth2_server.repository.auth_code.default:
+        class: PE\Bundle\OAuth2ServerBundle\Doctrine\AuthCodeRepository
+        arguments:
+            - '@pe_oauth2_server.object_manager'
+            - '%pe_oauth2_server.class.auth_code%'
+
+    pe_oauth2_server.repository.client.default:
+        class: PE\Bundle\OAuth2ServerBundle\Doctrine\ClientRepository
+        arguments:
+            - '@pe_oauth2_server.object_manager'
+            - '%pe_oauth2_server.class.client%'
+
+    pe_oauth2_server.repository.refresh_token.default:
+        class: PE\Bundle\OAuth2ServerBundle\Doctrine\RefreshTokenRepository
+        arguments:
+            - '@pe_oauth2_server.object_manager'
+            - '%pe_oauth2_server.class.refresh_token%'
+
+    pe_oauth2_server.repository.scope.default:
+        class: PE\Bundle\OAuth2ServerBundle\Doctrine\ScopeRepository
+        arguments:
+            - '@pe_oauth2_server.object_manager'
+            - '%pe_oauth2_server.class.scope%'
+
+    pe_oauth2_server.repository.user.default:
+        class: PE\Bundle\OAuth2ServerBundle\Repository\UserRepository
+        arguments:
+            - '@event_dispatcher'
+
+    pe_oauth2_server.grant.authorization_code:
+        class: League\OAuth2\Server\Grant\AuthCodeGrant
+        arguments:
+            - '@pe_oauth2_server.repository.auth_code'
+            - '@pe_oauth2_server.repository.refresh_token'
+            - '@pe_oauth2_server.grant.authorization_code.access_token_ttl'
+        calls:
+            - ['setRefreshTokenTTL', ['@pe_oauth2_server.grant.authorization_code.refresh_token_ttl']]
+
+    pe_oauth2_server.grant.authorization_code.access_token_ttl:
+        shared: false
+        class: DateInterval
+        arguments: ['%pe_oauth2_server.grant.authorization_code.access_token_ttl%']
+
+    pe_oauth2_server.grant.authorization_code.refresh_token_ttl:
+        shared: false
+        class: DateInterval
+        arguments: ['%pe_oauth2_server.grant.authorization_code.refresh_token_ttl%']
+
+    pe_oauth2_server.grant.client_credentials:
+        class: League\OAuth2\Server\Grant\ClientCredentialsGrant
+        calls:
+            - ['setRefreshTokenTTL', ['@pe_oauth2_server.grant.client_credentials.refresh_token_ttl']]
+
+    pe_oauth2_server.grant.client_credentials.access_token_ttl:
+        shared: false
+        class: DateInterval
+        arguments: ['%pe_oauth2_server.grant.client_credentials.access_token_ttl%']
+
+    pe_oauth2_server.grant.client_credentials.refresh_token_ttl:
+        shared: false
+        class: DateInterval
+        arguments: ['%pe_oauth2_server.grant.client_credentials.refresh_token_ttl%']
+
+    pe_oauth2_server.grant.implicit:
+        class: League\OAuth2\Server\Grant\ImplicitGrant
+        arguments:
+            - '@pe_oauth2_server.grant.implicit.access_token_ttl'
+
+    pe_oauth2_server.grant.implicit.access_token_ttl:
+        shared: false
+        class: DateInterval
+        arguments: ['%pe_oauth2_server.grant.implicit.access_token_ttl%']
+
+    pe_oauth2_server.grant.password:
+        class: League\OAuth2\Server\Grant\PasswordGrant
+        arguments:
+            - '@pe_oauth2_server.repository.user'
+            - '@pe_oauth2_server.repository.refresh_token'
+        calls:
+            - ['setRefreshTokenTTL', ['@pe_oauth2_server.grant.password.refresh_token_ttl']]
+
+    pe_oauth2_server.grant.password.access_token_ttl:
+        shared: false
+        class: DateInterval
+        arguments: ['%pe_oauth2_server.grant.password.access_token_ttl%']
+
+    pe_oauth2_server.grant.password.refresh_token_ttl:
+        shared: false
+        class: DateInterval
+        arguments: ['%pe_oauth2_server.grant.password.refresh_token_ttl%']
+
+    pe_oauth2_server.grant.refresh_token:
+        class: League\OAuth2\Server\Grant\RefreshTokenGrant
+        arguments:
+            - '@pe_oauth2_server.repository.refresh_token'
+        calls:
+            - ['setRefreshTokenTTL', ['@pe_oauth2_server.grant.refresh_token.refresh_token_ttl']]
+
+    pe_oauth2_server.grant.refresh_token.access_token_ttl:
+        shared: false
+        class: DateInterval
+        arguments: ['%pe_oauth2_server.grant.refresh_token.access_token_ttl%']
+
+    pe_oauth2_server.grant.refresh_token.refresh_token_ttl:
+        shared: false
+        class: DateInterval
+        arguments: ['%pe_oauth2_server.grant.refresh_token.refresh_token_ttl%']
+
+    pe_oauth2_server.command.create_client:
+        class: PE\Bundle\OAuth2ServerBundle\Command\CreateClientCommand
+        arguments:
+            - '@pe_oauth2_server.repository.client'
+        tags:
+            - { name: console.command }
+
+    pe_oauth2_server.command.create_scope:
+        class: PE\Bundle\OAuth2ServerBundle\Command\CreateScopeCommand
+        arguments:
+            - '@pe_oauth2_server.repository.scope'
+        tags:
+            - { name: console.command }
+
+    pe_oauth2_server.command.generate_key_pair:
+        class: PE\Bundle\OAuth2ServerBundle\Command\GenerateKeyPairCommand
+        arguments:
+            - '%pe_oauth2_server.key.public%'
+            - '%pe_oauth2_server.key.private%'
+            - '%pe_oauth2_server.key.passphrase%'
+        tags:
+            - { name: console.command }
+
+    pe_oauth2_server.request_converter.guzzle:
+        class: PE\Bundle\OAuth2ServerBundle\RequestConverter\GuzzleRequestConverter
+
+    pe_oauth2_server.request_converter.diactoros:
+        class: PE\Bundle\OAuth2ServerBundle\RequestConverter\DiactorosRequestConverter
+
+    pe_oauth2_server.authorization_server:
+        public: true
+        class: League\OAuth2\Server\AuthorizationServer
+        arguments:
+            - '@pe_oauth2_server.repository.client'
+            - '@pe_oauth2_server.repository.access_token'
+            - '@pe_oauth2_server.repository.scope'
+            - '%pe_oauth2_server.key.private%'
+            - '%pe_oauth2_server.key.public%'
+
+    pe_oauth2_server.controller.security:
+        public: true
+        class: PE\Bundle\OAuth2ServerBundle\Controller\AuthorizeController
+        arguments:
+            - '@pe_oauth2_server.authorization_server'
+            - '@pe_oauth2_server.repository.scope'
+            - '@pe_oauth2_server.request_converter'
+            - '%pe_oauth2_server.session_key%'
+            - '%pe_oauth2_server.login_path%'
+
+    pe_oauth2_server.controller.token:
+        public: true
+        class: PE\Bundle\OAuth2ServerBundle\Controller\TokenController
+        arguments:
+            - '@pe_oauth2_server.authorization_server'
+            - '@pe_oauth2_server.request_converter'
+
+    pe_oauth2_server.controller.scopes:
+        public: true
+        class: PE\Bundle\OAuth2ServerBundle\Controller\ScopesController
+        arguments:
+            - '@pe_oauth2_server.repository.scope'
+            - '%pe_oauth2_server.session_key%'
+            - '%pe_oauth2_server.name%'
