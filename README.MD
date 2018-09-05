@@ -5,7 +5,7 @@ This bundle integrates with [league/oauth2-server](https://oauth2.thephpleague.c
 Install the library via [Composer](https://getcomposer.org/) by
 running the following command:
 ```bash
-composer require pe/oauth2-server-bundle
+composer require pe/symfony-bundle-oauth2-server
 ```
 Then enable the bundle in your kernel:
 ```php
